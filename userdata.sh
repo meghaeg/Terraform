@@ -1,38 +1,35 @@
 #!/bin/bash
 
 # Update system
-sudo apt update -y
+sudo dnf update -y
 
-# ----------------------------
+# --------------------
 # Install Git
-# ----------------------------
-sudo apt install git -y
+# --------------------
+sudo dnf install git -y
 
-# ----------------------------
+# --------------------
 # Install Docker
-# ----------------------------
-sudo apt install docker.io -y
+# --------------------
+sudo dnf install docker -y
 sudo systemctl start docker
 sudo systemctl enable docker
-sudo usermod -aG docker ubuntu
+sudo usermod -aG docker ec2-user
 
-# ----------------------------
-# Install Java (Required for Jenkins)
-# ----------------------------
-sudo apt install openjdk-17-jdk -y
+# --------------------
+# Install Java (Jenkins requirement)
+# --------------------
+sudo dnf install java-17-amazon-corretto -y
 
-# ----------------------------
+# --------------------
 # Install Jenkins
-# ----------------------------
-curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
-  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+# --------------------
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+https://pkg.jenkins.io/redhat-stable/jenkins.repo
 
-echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
-  https://pkg.jenkins.io/debian binary/ | sudo tee \
-  /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
 
-sudo apt update -y
-sudo apt install jenkins -y
+sudo dnf install jenkins -y
 
-sudo systemctl start jenkins
 sudo systemctl enable jenkins
+sudo systemctl start jenkins
