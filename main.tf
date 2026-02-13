@@ -1,8 +1,13 @@
+# -----------------------------
+# Security Group
+# -----------------------------
 resource "aws_security_group" "devops_sg" {
 
-  name = "devops-sg"
+  name        = "devops-sg"
+  description = "Allow SSH and Jenkins access"
 
   ingress {
+    description = "SSH Access"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -10,6 +15,7 @@ resource "aws_security_group" "devops_sg" {
   }
 
   ingress {
+    description = "Jenkins Access"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
@@ -22,12 +28,22 @@ resource "aws_security_group" "devops_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = {
+    Name = "DevOps-SG"
+  }
 }
 
+
+# -----------------------------
+# EC2 Instance
+# -----------------------------
 resource "aws_instance" "dev_server" {
 
   ami           = var.ami_id
   instance_type = var.instance_type
+
+  associate_public_ip_address = true
 
   user_data = file("userdata.sh")
 
@@ -37,4 +53,3 @@ resource "aws_instance" "dev_server" {
     Name = "ALLSERVER"
   }
 }
-
