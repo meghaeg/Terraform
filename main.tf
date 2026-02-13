@@ -34,6 +34,7 @@ resource "aws_instance" "dev_server" {
   vpc_security_group_ids = [aws_security_group.devops_sg.id]
 
   tags = {
-    Name = "DevOps-Server"
+    Name = "ALLSERVER"
   }
 }
+
